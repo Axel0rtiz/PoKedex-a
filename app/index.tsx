@@ -1,7 +1,10 @@
+import { Button } from "@react-navigation/elements";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function Index() {
+  const router = useRouter();
   useEffect(() => {
     console.log("En pantalla");
     getPokemons();
@@ -9,33 +12,69 @@ export default function Index() {
 
   const [pokemon, setPokemon] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  // Buscador de pokemon
+  const [pokemonId, setPokemonId] = useState("1");
 
   const getPokemons = async () => {
-    const url: string =
-      "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0";
+    const url = `https://pokeapi.co/api/v2/pokemon/${pokemonId}`;
+    // Peticion a la api
     const response = await fetch(url, {
       method: "GET",
     });
+    // Convertir a json
     const data = await response.json();
-    const firstPokemonUrl = data.results[0].url;
-    const pokemonResponse = await fetch(firstPokemonUrl);
-    const pokemonData = await pokemonResponse.json();
-    setPokemon(pokemonData);
+    // Se guarda la informcaion
+    setPokemon(data);
     setLoading(false);
-    console.log(pokemonData);
   };
 
   return (
-    <View>
+    <View style={{ alignItems: "center" }}>
       {pokemon && (
         <>
-          <Image
-            source={{ uri: pokemon.sprites.front_default }}
-            style={{ width: 150, height: 150 }}
-          />
-          <Text>{pokemon?.name?.toUpperCase()}</Text>
+          <View style={styles.contenedorImagen}>
+            <Image
+              source={{ uri: pokemon.sprites.front_default }}
+              style={{ width: 150, height: 150 }}
+            />
+            <Text style={styles.txtContImg}>{pokemon?.name.toUpperCase()}</Text>
+          </View>
+          <TextInput
+            style={styles.textInput}
+            placeholder="ID"
+            onChangeText={(texto) => setPokemonId(texto)}
+            value={pokemonId}
+          ></TextInput>
+          <Button onPress={getPokemons}
+            style={{ marginBottom: 20 }} >
+            Buscar pokemon
+          </Button>
+          <Button onPress={() => router.push("/Pokemones")}>
+            Ir a Pokemones
+          </Button>
         </>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  contenedorImagen: {
+    borderWidth: 1,
+    borderColor: "black",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  txtContImg: {
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  textInput: {
+    textAlign: "center",
+    margin: 15,
+    borderWidth: 1.5,
+    borderColor: "#000000",
+    borderRadius: 7,
+    width: 60,
+  },
+});
