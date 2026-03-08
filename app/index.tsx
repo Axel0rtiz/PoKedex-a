@@ -42,11 +42,12 @@ export default function Index() {
           <TextInput
             style={styles.textInput}
             placeholder="ID"
-            onChangeText={(texto) => setPokemonId(texto)}
+            onChangeText={(texto) => {
+              setPokemonId(texto);
+            }}
             value={pokemonId}
           ></TextInput>
-          <Button onPress={getPokemons}
-            style={{ marginBottom: 20 }} >
+          <Button onPress={getPokemons} style={{ marginBottom: 20 }}>
             Buscar pokemon
           </Button>
           <Button onPress={() => router.push("/Pokemones")}>

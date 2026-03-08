@@ -1,14 +1,7 @@
 import PokemonCard from "@/components/PokemonCard";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 interface Pokemon {
   name: string;
@@ -18,7 +11,6 @@ interface Pokemon {
 export default function Pokemones() {
   const router = useRouter();
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  const [loading, setLoading] = useState(true);
 
   // Trae los polemones
   useEffect(() => {
@@ -26,27 +18,12 @@ export default function Pokemones() {
   }, []);
 
   const fetchPokemons = async () => {
-    try {
-      const response = await fetch(
-        "https://pokeapi.co/api/v2/pokemon?limit=60",
-      );
-      //Convierte a json lo que nos da la url
-      const data = await response.json();
-      setPokemons(data.results);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    //Peticion get
+    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=60");
+    //Convierte a json lo que nos da la url
+    const data = await response.json();
+    setPokemons(data.results);
   };
-
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
